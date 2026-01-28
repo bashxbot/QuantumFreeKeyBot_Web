@@ -1,0 +1,74 @@
+modules = ["nodejs-20", "postgresql-16"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+packages = ["flyctl"]
+
+[userenv]
+
+[userenv.shared]
+FIREBASE_DATABASE_URL = "https://tgbot-7f330-default-rtdb.asia-southeast1.firebasedatabase.app"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Bot & Admin Panel"
+
+[[workflows.workflow]]
+name = "Run Telegram Bot"
+author = 50486729
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node index.js"
+
+[[workflows.workflow]]
+name = "Start All Services"
+author = 50522191
+mode = "parallel"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node index.js"
+
+[[workflows.workflow]]
+name = "Run Bot & Admin Panel"
+author = 50525219
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node index.js"
+
+[[workflows.workflow]]
+name = "Bot & Admin Panel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node index.js"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 42679
+externalPort = 3000
+
+[deployment]
+run = ["sh", "-c", "cd client && npm run dev -- --host 0.0.0.0 --port 80"]
